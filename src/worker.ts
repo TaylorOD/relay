@@ -1,5 +1,6 @@
-import { compare, defaults, Simulation } from './engine.ts'
-import type { Config } from './engine.ts'
+import { compare, Simulation } from './simulation/engine.ts'
+import { defaults } from './simulation/config.ts'
+import type { WorkerCommand, WorkerReply } from './worker-messages.ts'
 let simulation = new Simulation(defaults)
 let timer: ReturnType<typeof setInterval> | undefined
 let speed = 1
@@ -9,7 +10,7 @@ function pause() {
   timer = undefined
 }
 function send() {
-  postMessage({ type: 'snapshot', revision, data: simulation.snapshot() })
+  postMessage({ type: 'snapshot', revision, data: simulation.snapshot() } satisfies WorkerReply)
 }
 function play() {
   if (timer) return
@@ -19,9 +20,7 @@ function play() {
     if (simulation.snapshot().done) pause()
   }, 100)
 }
-onmessage = (
-  event: MessageEvent<{ type: string; config: Config; speed: number; revision: number }>,
-) => {
+onmessage = (event: MessageEvent<WorkerCommand>) => {
   const message = event.data
   if (message.type === 'reset') {
     pause()
@@ -38,5 +37,9 @@ onmessage = (
     send()
   }
   if (message.type === 'compare')
-    postMessage({ type: 'comparison', revision, data: compare(message.config) })
+    postMessage({
+      type: 'comparison',
+      revision,
+      data: compare(message.config),
+    } satisfies WorkerReply)
 }

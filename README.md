@@ -46,6 +46,21 @@ Three fault scenarios, two routing policies, bounded queues, retries with jitter
 
 No AI, accounts, API keys, paid services, or backend to keep alive. GitHub Pages serves the app. Node is used for the CLI, tests, and build. GitHub Pages does not run a Node server.
 
+## Where things live
+
+| Location | What it owns |
+| --- | --- |
+| `src/main.tsx` and `src/App.tsx` | Startup and page layout |
+| `src/components/` | Controls, topology, charts, results, and field guide |
+| `src/hooks/useExperiment.ts` | Run state, worker lifecycle, sharing, and exports |
+| `src/worker.ts` and `src/worker-messages.ts` | Background playback and typed messages |
+| `src/simulation/` | Engine, configuration, event queue, and data types |
+| `src/styles/` | Styles grouped by page area, with responsive rules loaded last |
+| `src/cli.ts` | Node command line entry |
+| `tests/` | Engine invariants and browser behavior |
+
+Start with `App.tsx` for the interface or `simulation/engine.ts` for the model. The [engineering notes](docs/engineering.md) explain the algorithms and tradeoffs. Comments in the code focus on decisions that are not obvious from the names.
+
 ## Checks
 
 ```sh

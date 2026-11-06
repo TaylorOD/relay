@@ -18,6 +18,16 @@ Service time and retry jitter use a stateless integer hash of the experiment see
 
 The worker sends updates at ten frames per wall clock second. SVG routing animations stay on the UI thread. A comparison runs both policies in the worker without blocking controls. A run has at most about 30,000 original requests at the supported bounds. Latency samples are exact and retained only for the current bounded run. This favors clarity over a streaming quantile sketch.
 
+## Reading and changing the code
+
+`main.tsx` mounts the page. `App.tsx` arranges the components. The components receive data and callbacks, while `useExperiment` owns run state and sends typed commands to the worker. The worker advances the simulation and returns snapshots. It does not render the interface.
+
+The simulation folder has no React or browser dependencies. `config.ts` validates shared settings, `types.ts` describes the data, `event-queue.ts` owns event ordering, and `engine.ts` handles routing and request lifecycles. The Node CLI imports these same modules.
+
+For a presentation change, start in the corresponding component and stylesheet. For a new fault, update the configuration allowlist, the engine behavior, and `scenarios.ts`, then extend the existing engine and browser cases. For a new worker command, update the message union first so TypeScript points out every affected caller.
+
+Keep the model tests focused on behavior and invariants. A refactor should preserve complete simulation reports for the same input, not merely keep a few headline numbers close. Keep comments for decisions such as seeded noise, stable event ordering, and ignoring stale worker results. Use the docs for longer explanations.
+
 ## Request lifecycle
 
 An original request gets an ID and arrival time. The router chooses an available region. It starts immediately if a worker is free, joins the bounded FIFO queue if there is room, or is rejected. Rejections and service failures may schedule a retry. A successful completion before the deadline settles the request. Otherwise the request eventually settles as failed. A retry keeps the original ID and arrival time.

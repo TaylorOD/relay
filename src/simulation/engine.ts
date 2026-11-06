@@ -1,131 +1,6 @@
-export type Fault = 'outage' | 'latency' | 'surge'
-export type Config = {
-  seed: number
-  rate: number
-  fault: Fault
-  faultStart: number
-  faultEnd: number
-  retries: boolean
-  breaker: boolean
-  balancing: 'round-robin' | 'least-busy'
-}
-export const defaults: Config = {
-  seed: 42,
-  rate: 120,
-  fault: 'outage',
-  faultStart: 15000,
-  faultEnd: 35000,
-  retries: true,
-  breaker: true,
-  balancing: 'least-busy',
-}
-export function parseConfig(input: unknown): Config {
-  const value = input && typeof input === 'object' ? (input as Record<string, unknown>) : {}
-  const number = (key: keyof Config, min: number, max: number) =>
-    typeof value[key] === 'number' && Number.isFinite(value[key])
-      ? Math.round(Math.max(min, Math.min(max, value[key] as number)))
-      : (defaults[key] as number)
-  const start = number('faultStart', 0, 55000)
-  return {
-    seed: number('seed', 1, 999999),
-    rate: number('rate', 20, 300),
-    fault: ['outage', 'latency', 'surge'].includes(value.fault as string)
-      ? (value.fault as Fault)
-      : defaults.fault,
-    faultStart: start,
-    faultEnd: Math.max(start + 1000, number('faultEnd', 1000, 60000)),
-    retries: typeof value.retries === 'boolean' ? value.retries : defaults.retries,
-    breaker: typeof value.breaker === 'boolean' ? value.breaker : defaults.breaker,
-    balancing: value.balancing === 'round-robin' ? 'round-robin' : 'least-busy',
-  }
-}
-
-type Request = { id: number; born: number; attempt: number }
-type Event = {
-  at: number
-  seq: number
-  kind: 'arrival' | 'attempt' | 'complete'
-  request?: Request
-  pool?: number
-  ok?: boolean
-}
-export type Pool = {
-  active: number
-  queue: Request[]
-  state: 'closed' | 'open' | 'half-open'
-  until: number
-  failures: number
-  completed: number
-  rejected: number
-}
-export type Log = { at: number; message: string; type: 'info' | 'bad' | 'good' }
-export type Point = {
-  second: number
-  success: number
-  failed: number
-  pending: number
-  latency: number
-}
-export type Snapshot = {
-  time: number
-  generated: number
-  success: number
-  failed: number
-  pending: number
-  attempts: number
-  p95: number
-  availability: number
-  trips: number
-  done: boolean
-  faultActive: boolean
-  pools: {
-    active: number
-    queued: number
-    state: Pool['state']
-    completed: number
-    rejected: number
-  }[]
-  history: Point[]
-  logs: Log[]
-  config: Config
-}
-
-// A stable min heap keeps event order independent of wall clock or render rate.
-class EventQueue {
-  items: Event[] = []
-  before(a: Event, b: Event) {
-    return a.at < b.at || (a.at === b.at && a.seq < b.seq)
-  }
-  push(event: Event) {
-    const items = this.items
-    items.push(event)
-    let i = items.length - 1
-    while (i > 0) {
-      const p = (i - 1) >> 1
-      if (!this.before(items[i], items[p])) break
-      ;[items[i], items[p]] = [items[p], items[i]]
-      i = p
-    }
-  }
-  pop(): Event | undefined {
-    const head = this.items[0]
-    const last = this.items.pop()
-    if (this.items.length && last) {
-      this.items[0] = last
-      let i = 0
-      while (true) {
-        let child = i * 2 + 1
-        if (child >= this.items.length) break
-        if (child + 1 < this.items.length && this.before(this.items[child + 1], this.items[child]))
-          child++
-        if (!this.before(this.items[child], this.items[i])) break
-        ;[this.items[i], this.items[child]] = [this.items[child], this.items[i]]
-        i = child
-      }
-    }
-    return head
-  }
-}
+import { defaults, parseConfig } from './config.ts'
+import { EventQueue } from './event-queue.ts'
+import type { Config, Request, Event, Pool, Log, Point, Snapshot } from './types.ts'
 
 // Stateless noise gives every request the same service cost across policy runs.
 function noise(seed: number, id: number, salt: number) {
@@ -322,7 +197,7 @@ export class Simulation {
   advance(target: number) {
     const end = Math.max(this.time, Math.min(70000, target))
     while (true) {
-      const event = this.events.items[0]
+      const event = this.events.peek()
       if (this.nextSample <= end && (!event || this.nextSample <= event.at)) {
         this.time = this.nextSample
         this.refreshFault()
@@ -357,7 +232,7 @@ export class Simulation {
       p95: percentile(this.latencies),
       availability: settled ? (this.success / settled) * 100 : 100,
       trips: this.trips,
-      done: this.time >= 60000 && this.events.items.length === 0,
+      done: this.time >= 60000 && this.events.length === 0,
       faultActive: this.faultAt(this.time),
       pools: this.pools.map((pool) => ({
         active: pool.active,

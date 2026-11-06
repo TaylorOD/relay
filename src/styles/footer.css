@@ -1,0 +1,50 @@
+.under-hood {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--line);
+  gap: 16px;
+}
+.under-hood > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.under-hood h2 {
+  font-size: 14px;
+}
+.under-hood p {
+  font-size: 11px;
+  color: #626f5c;
+  margin: 8px 0 0;
+}
+.under-hood .section-index {
+  margin-top: 1px;
+}
+.under-hood .text-button {
+  color: #626f5c;
+  font-size: 11px;
+}
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  min-height: 78px;
+  font-size: 10px;
+  color: #626f5c;
+}
+footer > a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+footer > span {
+  font: 8px var(--mono);
+  letter-spacing: 1px;
+}
+footer button {
+  color: #626f5c !important;
+  font-size: 10px !important;
+}
