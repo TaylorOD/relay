@@ -1,0 +1,61 @@
+.stack-context,
+.dependency-context {
+  padding: 17px 20px;
+  background: #f6f8f0;
+  color: #35412f;
+}
+.stack-context {
+  border-top: 1px solid var(--line);
+}
+.stack-label {
+  display: block;
+  font: 9px var(--mono);
+  letter-spacing: 0.8px;
+  color: #626f5c;
+}
+.stack-context > strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 550;
+}
+.stack-context p,
+.dependency-context p {
+  margin: 7px 0 0;
+  font-size: 11px;
+  line-height: 1.7;
+  color: #626f5c;
+}
+.stack-context b,
+.dependency-context b {
+  color: #35412f;
+  font-weight: 550;
+}
+.dependency-context {
+  background: #edf1e6;
+}
+.stack-glossary {
+  font-size: 12px;
+  line-height: 1.7;
+}
+.stack-glossary dt {
+  font-weight: 600;
+  margin-top: 12px;
+}
+.stack-glossary dd {
+  margin: 3px 0 0;
+  color: #626f5c;
+}
+@media (max-width: 560px) {
+  .stack-context,
+  .dependency-context {
+    padding: 15px 13px;
+  }
+  .stack-label {
+    font-size: 8px;
+    letter-spacing: 0.5px;
+  }
+  .stack-context > strong {
+    font-size: 13px;
+  }
+}
