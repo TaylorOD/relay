@@ -1,0 +1,124 @@
+.below-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 19px;
+}
+.event-panel,
+.compare-panel {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 19px;
+  background: #fafbf5;
+  min-width: 0;
+}
+.mono {
+  font: 8px var(--mono);
+  color: #626f5c;
+}
+.event-list {
+  height: 112px;
+  overflow: auto;
+  margin-top: 13px;
+  scrollbar-width: thin;
+  scrollbar-color: #c3cbb8 transparent;
+}
+.event {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 7px 0;
+}
+.event time {
+  font: 9px var(--mono);
+  color: #626f5c;
+  min-width: 36px;
+}
+.event-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #95aa92;
+  flex-shrink: 0;
+  align-self: center;
+}
+.event.bad .event-dot {
+  background: #df8a5c;
+}
+.event p {
+  font: 10px var(--mono);
+  margin: 0;
+  color: #626f5c;
+  line-height: 1.6;
+}
+.event.bad p {
+  color: #955735;
+}
+.compare-panel {
+  background: #f0f2e8;
+  padding: 20px 24px;
+}
+.compare-panel p {
+  font-size: 11px;
+  color: #626f5c;
+  max-width: 380px;
+  margin: 12px 0;
+}
+.compare-button {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border: 1px solid #c8d0bb;
+  background: #fbfcf6;
+  border-radius: 5px;
+  padding: 9px 12px;
+  font-size: 10px;
+  font-weight: 500;
+}
+.compare-button:hover {
+  background: #e4ead9;
+}
+.compare-note {
+  display: block;
+  font-size: 8px;
+  color: #626f5c;
+  margin-top: 9px;
+}
+.comparison {
+  margin-top: 18px;
+  background: #fffef9;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 22px;
+}
+.comparison-table {
+  overflow-x: auto;
+}
+.comparison table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 12px var(--mono);
+  margin-top: 12px;
+  text-align: right;
+  white-space: nowrap;
+}
+.comparison th,
+.comparison td {
+  padding: 14px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.comparison th:first-child {
+  text-align: left;
+}
+.comparison thead {
+  font: 10px var(--mono);
+  color: #7d8774;
+}
+.comparison tbody tr:last-child {
+  color: #24735b;
+  background: #f0f6eb;
+}
+.comparison p {
+  font-size: 11px;
+  color: #6d7865;
+}

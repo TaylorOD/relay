@@ -1,4 +1,5 @@
-import { compare, defaults, parseConfig } from './engine.ts'
+import { compare } from './simulation/engine.ts'
+import { defaults, parseConfig } from './simulation/config.ts'
 const args = process.argv.slice(2)
 if (args.includes('--help')) {
   console.log(

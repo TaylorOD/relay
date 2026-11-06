@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { compare, defaults, parseConfig, run, Simulation } from '../src/engine.ts'
+import { compare, run, Simulation } from '../src/simulation/engine.ts'
+import { defaults, parseConfig } from '../src/simulation/config.ts'
 
 test('the same seed and configuration produce the same complete report', () => {
   assert.deepEqual(run(), run())
