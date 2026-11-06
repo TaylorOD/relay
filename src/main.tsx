@@ -397,7 +397,10 @@ function App() {
     setRunning(!running)
   }
   function inject() {
-    worker.current?.postMessage({ type: 'inject' })
+    revision.current++
+    setComparison(null)
+    setComparing(false)
+    worker.current?.postMessage({ type: 'inject', revision: revision.current })
     if (!running) {
       worker.current?.postMessage({ type: 'play' })
       setRunning(true)
