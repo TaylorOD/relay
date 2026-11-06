@@ -27,15 +27,38 @@ export function FieldGuide({ open, onClose }: { open: boolean; onClose: () => vo
         <div className="eyebrow">RELAY / FIELD GUIDE</div>
         <h2 id="guide-title">Break it. Then explain it.</h2>
         <p>
-          Relay is a small model of a service running in two regions. It is a place to test an idea
-          before explaining it on a whiteboard.
+          Imagine a shopping app loading a product page. Relay models its backend running in two
+          regions, so you can see what happens when one copy fails.
+        </p>
+        <h3>Put names to the boxes</h3>
+        <dl className="stack-glossary">
+          <dt>React frontend</dt>
+          <dd>The page in the customer's browser. It sends a request for product data.</dd>
+          <dt>NGINX load balancer</dt>
+          <dd>The traffic router. It chooses which backend copy receives that request.</dd>
+          <dt>Node.js API servers</dt>
+          <dd>
+            Two copies of the same backend, one east and one west. Each handles product requests.
+          </dd>
+          <dt>Redis cache</dt>
+          <dd>
+            A place behind the API to keep frequently used data ready without querying the database
+            every time.
+          </dd>
+          <dt>PostgreSQL database</dt>
+          <dd>The persistent store for the product catalog behind the API.</dd>
+        </dl>
+        <p>
+          These names illustrate a familiar stack. Relay simulates requests and API workers rather
+          than running those servers. Redis and PostgreSQL are context only: cache behavior and
+          database queries are outside this model.
         </p>
         <h3>A quick experiment</h3>
         <ol>
           <li>
             Keep the defaults and press <strong>Run experiment</strong>.
           </li>
-          <li>At 15 seconds, east goes offline. Watch its circuit open.</li>
+          <li>At 15 seconds, the east Node.js API goes offline. Watch its circuit open.</li>
           <li>
             Press <strong>Compare strategies</strong> to see the same outage without protection.
           </li>

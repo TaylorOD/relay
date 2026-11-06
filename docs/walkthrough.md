@@ -7,13 +7,17 @@ I built a reliability simulator where you can break a service and watch how the 
 ## A two minute demo
 
 1. Open Relay and run the default scenario at 4× speed.
-2. Point out the two regions and the routing policy. At 15 simulated seconds, east goes down.
+2. Explain the shopping app example. A React frontend asks for product data, NGINX routes the request, and a Node.js API handles it. East and west are two copies of the same backend. At 15 simulated seconds, east goes down.
 3. Show the circuit opening, the west queue growing, and latency rising.
 4. Compare strategies. The default protected run delivers 7,139 requests versus 6,064 without protection. Successful p95 latency goes up from 138 ms to 847 ms.
 5. Explain the tradeoff. More delivered requests does not mean less work or lower latency.
 6. Switch to a traffic spike at 300 requests per second. Show that retries cannot fix insufficient capacity.
 
 ## Questions worth being ready for
+
+**Where do Redis and a database fit?**
+
+They would sit behind the Node.js API. Redis could cache popular product data, and PostgreSQL could store the catalog. Relay explains those roles but does not simulate cache hits or database queries. The working model covers routing, API capacity, queues, retries, and circuit breakers. The technology names are a familiar example stack, not services deployed by this project.
 
 **Why not use real HTTP requests?**
 

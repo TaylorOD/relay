@@ -4,6 +4,8 @@ Break things. See what holds.
 
 Relay is a reliability playground. Send traffic through two service regions, take one offline, and see what happens when you add retries, change routing, or open a circuit breaker.
 
+The diagram uses a shopping app example: React frontend, NGINX load balancer, and two Node.js API servers. It also explains where a Redis cache and PostgreSQL database would fit. Those names make the roles concrete. The simulation covers API traffic and failures, not cache behavior or database queries.
+
 [Open the lab](https://www.taylordorsett.com/relay/) · [How it works](docs/engineering.md) · [Interview walkthrough](docs/walkthrough.md)
 
 ![Relay running an outage experiment](docs/screenshots/desktop.png)

@@ -1,5 +1,6 @@
 import type { Snapshot } from '../simulation/types.ts'
 import { format } from '../format.ts'
+import { StackContext, DependencyContext } from './StackContext.tsx'
 
 export function Topology({ snapshot, running }: { snapshot: Snapshot; running: boolean }) {
   const fault = snapshot.faultActive
@@ -31,9 +32,10 @@ export function Topology({ snapshot, running }: { snapshot: Snapshot; running: b
   )
   return (
     <div className={`topology ${running && !snapshot.done ? 'flowing' : ''}`}>
+      <StackContext />
       <div className="map-top">
         <span>
-          <span className="tiny-dot" /> STOREFRONT / PRODUCTION MODEL
+          <span className="tiny-dot" /> PRODUCT REQUEST / SIMULATED TRAFFIC
         </span>
         <span className="map-status">{fault ? 'FAULT IN PROGRESS' : 'ALL SYSTEMS NOMINAL'}</span>
       </div>
@@ -41,7 +43,7 @@ export function Topology({ snapshot, running }: { snapshot: Snapshot; running: b
         className="network desktop-network"
         viewBox="0 0 960 342"
         role="img"
-        aria-label={`System topology. ${eastDown ? 'East region offline' : eastSlow ? 'East region slow' : 'Both regions healthy'}. West has ${pools[1].active} active requests.`}
+        aria-label={`Shopping app: React frontend, NGINX load balancer, and two Node.js API servers. ${eastDown ? 'East region offline' : eastSlow ? 'East region slow' : 'Both regions healthy'}. West has ${pools[1].active} active requests.`}
       >
         <defs>
           <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -52,10 +54,10 @@ export function Topology({ snapshot, running }: { snapshot: Snapshot; running: b
         <rect className="region-boundary" x="469" y="12" width="194" height="142" rx="12" />
         <rect className="region-boundary" x="469" y="187" width="194" height="142" rx="12" />
         <text className="region-label" x="485" y="33">
-          REGION 01 / EAST
+          NODE.JS BACKEND / EAST
         </text>
         <text className="region-label" x="485" y="208">
-          REGION 02 / WEST
+          NODE.JS BACKEND / WEST
         </text>
         <g fill="none" strokeWidth="1.6">
           <path className="wire" d="M189 171 H264" />
@@ -84,21 +86,21 @@ export function Topology({ snapshot, running }: { snapshot: Snapshot; running: b
         {node(
           37,
           127,
-          'Incoming traffic',
+          'React frontend',
           `${snapshot.config.rate * (fault && snapshot.config.fault === 'surge' ? 3 : 1)} requests / sec`,
           '↗',
         )}
         {node(
           264,
           127,
-          'Load balancer',
+          'NGINX balancer',
           snapshot.config.balancing === 'least-busy' ? 'Least busy routing' : 'Round robin routing',
           '⑂',
         )}
         {node(
           490,
           52,
-          'East service',
+          'Node.js API · East',
           eastDown ? 'Connection refused' : `${pools[0].active} active · ${pools[0].queued} queued`,
           '▤',
           eastDown ? 'offline' : eastSlow ? 'slow' : 'healthy',
@@ -106,11 +108,11 @@ export function Topology({ snapshot, running }: { snapshot: Snapshot; running: b
         {node(
           490,
           237,
-          'West service',
+          'Node.js API · West',
           `${pools[1].active} active · ${pools[1].queued} queued`,
           '▤',
         )}
-        {node(756, 127, 'Response', `${format(snapshot.success)} delivered`, '✓')}
+        {node(756, 127, 'Product loaded', `${format(snapshot.success)} delivered`, '✓')}
         <text
           className={`breaker-label ${pools[0].state === 'open' ? 'tripped' : ''}`}
           x="566"
@@ -127,7 +129,7 @@ export function Topology({ snapshot, running }: { snapshot: Snapshot; running: b
         className="mobile-network"
         viewBox="0 0 360 365"
         role="img"
-        aria-label={`System topology. ${eastDown ? 'East region offline' : eastSlow ? 'East region slow' : 'Both regions healthy'}. West has ${pools[1].active} active requests.`}
+        aria-label={`Shopping app: React frontend, NGINX load balancer, and two Node.js API servers. ${eastDown ? 'East region offline' : eastSlow ? 'East region slow' : 'Both regions healthy'}. West has ${pools[1].active} active requests.`}
       >
         <rect width="360" height="365" fill="url(#dots)" />
         <g fill="none" strokeWidth="1.6">
@@ -138,21 +140,21 @@ export function Topology({ snapshot, running }: { snapshot: Snapshot; running: b
         {node(
           104,
           12,
-          'Incoming traffic',
+          'React frontend',
           `${snapshot.config.rate * (fault && snapshot.config.fault === 'surge' ? 3 : 1)} requests / sec`,
           '↗',
         )}
         {node(
           104,
           130,
-          'Load balancer',
+          'NGINX balancer',
           snapshot.config.balancing === 'least-busy' ? 'Least busy routing' : 'Round robin routing',
           '⑂',
         )}
         {node(
           12,
           263,
-          'East service',
+          'Node.js API · East',
           eastDown ? 'Connection refused' : `${pools[0].active} active · ${pools[0].queued} queued`,
           '▤',
           eastDown ? 'offline' : eastSlow ? 'slow' : 'healthy',
@@ -160,7 +162,7 @@ export function Topology({ snapshot, running }: { snapshot: Snapshot; running: b
         {node(
           196,
           263,
-          'West service',
+          'Node.js API · West',
           `${pools[1].active} active · ${pools[1].queued} queued`,
           '▤',
         )}
@@ -180,6 +182,7 @@ export function Topology({ snapshot, running }: { snapshot: Snapshot; running: b
         </span>
         <span>Animated paths show routing, not individual requests</span>
       </div>
+      <DependencyContext />
     </div>
   )
 }
