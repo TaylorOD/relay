@@ -33,6 +33,7 @@ onmessage = (
   if (message.type === 'pause') pause()
   if (message.type === 'speed') speed = message.speed
   if (message.type === 'inject') {
+    revision = message.revision
     simulation.inject()
     send()
   }

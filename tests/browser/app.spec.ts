@@ -24,6 +24,9 @@ test('compares real results and exports a report', async ({ page }) => {
   const download = page.waitForEvent('download')
   await page.getByRole('button', { name: 'Export results' }).click()
   expect((await download).suggestedFilename()).toBe('relay-outage-42.json')
+  await page.getByRole('button', { name: 'Inject now' }).click()
+  await expect(table).not.toBeVisible()
+  await expect(page.getByText('East region offline', { exact: true })).toBeVisible()
 })
 test('scenario and protections reset the run, share settings survive reload', async ({ page }) => {
   await page.goto('./')
