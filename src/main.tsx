@@ -937,7 +937,7 @@ function App() {
             infrastructure failures. The traffic source is evenly spaced and the queues are bounded.
           </p>
           <h3>Reproduce it in Node</h3>
-          <pre>
+          <pre tabIndex={0}>
             npm install{'\n'}npm run simulate -- --fault outage --rate 120 --seed 42{'\n'}npm run
             simulate -- --json
           </pre>

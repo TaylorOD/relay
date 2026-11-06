@@ -47,6 +47,10 @@ test('guide supports keyboard dismissal and page fits viewport', async ({ page }
   await page.goto('./')
   await page.getByRole('button', { name: 'Field guide', exact: true }).click()
   await expect(page.getByRole('dialog')).toBeVisible()
+  const guideAudit = await new AxeBuilder({ page }).analyze()
+  expect(
+    guideAudit.violations.filter((item) => item.impact === 'serious' || item.impact === 'critical'),
+  ).toEqual([])
   await page.keyboard.press('Escape')
   await expect(page.getByRole('dialog')).not.toBeVisible()
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
