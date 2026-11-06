@@ -59,6 +59,14 @@ Engine tests cover determinism, playback independence, recovery, saturation, inp
 
 GitHub Actions checks PRs. A successful main branch check starts deployment. A failed check does not publish. Screenshots are in `docs/screenshots/`. To refresh them, run a production preview on port 4173, then `node scripts/capture.mjs`.
 
+## PR previews
+
+PR Preview Action is pinned to `rossjrw/pr-preview-action@v1.8.2`. PRs from branches in this repo get a preview link and QR code in a sticky comment. New commits update the preview. Closing or merging the PR removes it.
+
+Preview URLs use `/relay/pr-preview/pr-NUMBER/`. Vite builds each preview for that exact path, including the worker and assets. Fork PRs still run checks but do not receive write permissions or a hosted preview.
+
+Pages publishes from the root of `gh-pages`. Production updates preserve `pr-preview/`, and both workflows share a deployment queue. Do not switch Pages back to the GitHub Actions source or force push the deployment branch.
+
 ## Limits
 
 This is an educational model. Requests arrive at fixed intervals. Each region has 12 concurrent workers and an 80 request queue. The model omits real networking, connection pools, databases, and cloud infrastructure. Its animation illustrates routing rather than individual packets. See the engineering notes before using the numbers in a presentation.
