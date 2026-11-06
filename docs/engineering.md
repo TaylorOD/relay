@@ -58,7 +58,7 @@ Transient success rate can look good while requests are still waiting. Compare c
 
 Unit tests check all request accounting and queue bounds across 36 combinations, plus deterministic replay and recovery. Browser tests exercise the built site and real worker at desktop and phone sizes. They also run axe, check keyboard dismissal, and reject horizontal page overflow. Screenshots are manually inspected before publication.
 
-The lockfile is committed. PRs run tests and a type checked production build. Deployments use the exact commit of a passing main workflow. GitHub Pages deployment history provides a rollback path. To roll back, revert the offending commit through a PR and let the same checks run.
+The lockfile is committed. PRs run tests and a type checked production build. Production builds use the exact commit of a passing main workflow, then update `gh-pages` without deleting open previews. PR Preview Action v1.8.2 publishes each same repository PR into its own directory and removes it on close. Both publishers share a deployment queue and avoid force pushes. To roll back, revert the offending commit through a PR and let the same checks run.
 
 Inputs from shared URLs are validated, enums are allowlisted, and numeric bounds are clamped. React escapes displayed strings. Reports are local JSON downloads. The app makes no application API calls and stores no user data. Fonts are loaded from Google Fonts with system fallbacks.
 
